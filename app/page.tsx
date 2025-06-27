@@ -1,3 +1,4 @@
+import config from "@/src/config";
 import Image from "next/image";
 
 export default function Home() {
@@ -17,6 +18,7 @@ export default function Home() {
             Get started by editing{" "}
             <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
               app/page.tsx
+              {config.BASE_URL}
             </code>
             .
           </li>
