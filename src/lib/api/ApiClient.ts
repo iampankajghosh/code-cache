@@ -1,5 +1,6 @@
 import axios from "axios";
 import defaultConfig from "./config";
+import storageService from "../services/StorageService";
 
 class ApiClient {
   private readonly config;
@@ -22,7 +23,7 @@ class ApiClient {
   private initializeRequestInterceptor() {
     this.axiosInstance.interceptors.request.use(
       (config) => {
-        const token = localStorage.getItem(this.config.tokenKey);
+        const token = storageService.getItem(this.config.tokenKey);
 
         if (token) {
           config.headers.Authorization = `Bearer ${token}`;
@@ -42,7 +43,7 @@ class ApiClient {
           const { status, data } = error.response;
 
           if (status === 401 && this.config.redirectOnUnauthorized) {
-            localStorage.removeItem(this.config.tokenKey);
+            storageService.removeItem(this.config.tokenKey);
             window.location.href = this.config.loginRedirectPath;
           }
 
