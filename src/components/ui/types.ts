@@ -10,8 +10,7 @@ export interface InputProps
     | "placeholder"
     | "filled"
     | "underline"
-    | "minimal"
-    | "disabled";
+    | "minimal";
   inputSize?: "sm" | "md" | "lg";
   fullWidth?: boolean;
   disabled?: boolean;
@@ -23,7 +22,6 @@ export interface ButtonProps
   variant?:
     | "default"
     | "outlined"
-    | "disabled"
     | "ghost"
     | "destructive"
     | "success"

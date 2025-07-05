@@ -4,8 +4,8 @@ import React from "react";
 import { cva } from "class-variance-authority";
 import { twMerge } from "tailwind-merge";
 
-import type { ButtonProps } from "./types";
 import { Loader } from "../loaders";
+import type { ButtonProps } from "./types";
 
 // Tailwind variant styles for the button
 const buttonVariants = cva(
@@ -15,7 +15,6 @@ const buttonVariants = cva(
       variant: {
         default: "bg-primary text-white",
         outlined: "bg-transparent text-primary border border-primary",
-        disabled: "bg-gray-100 text-gray-400 cursor-not-allowed",
         ghost: "bg-transparent text-primary hover:bg-primary/10",
         destructive: "bg-red-600 text-white hover:bg-red-700",
         success: "bg-green-600 text-white hover:bg-green-700",
@@ -38,21 +37,9 @@ const buttonVariants = cva(
       },
     },
     compoundVariants: [
-      {
-        iconOnly: true,
-        size: "sm",
-        class: "w-[44px] h-[44px]",
-      },
-      {
-        iconOnly: true,
-        size: "md",
-        class: "w-[48px] h-[48px]",
-      },
-      {
-        iconOnly: true,
-        size: "lg",
-        class: "w-[52px] h-[52px]",
-      },
+      { iconOnly: true, size: "sm", class: "w-[44px] h-[44px]" },
+      { iconOnly: true, size: "md", class: "w-[48px] h-[48px]" },
+      { iconOnly: true, size: "lg", class: "w-[52px] h-[52px]" },
     ],
     defaultVariants: {
       variant: "default",
@@ -68,37 +55,32 @@ const buttonVariants = cva(
 function Button({
   children,
   className = "",
-  variant = "default",
-  size = "md",
+  variant,
+  size,
   leftIcon,
   rightIcon,
   loading = false,
   disabled = false,
-  fullWidth = false,
-  roundedFull = false,
-  iconOnly = false,
+  fullWidth,
+  roundedFull,
+  iconOnly,
   ...props
 }: Readonly<ButtonProps>) {
   const isDisabled = disabled || loading;
 
+  const buttonClasses = twMerge(
+    buttonVariants({ variant, size, fullWidth, roundedFull, iconOnly }),
+    isDisabled && "pointer-events-none opacity-50",
+    className
+  );
+
+  const renderIcon = (icon: React.ReactNode) => icon && <span>{icon}</span>;
+
   return (
-    <button
-      className={twMerge(
-        buttonVariants({
-          variant: isDisabled ? "disabled" : variant,
-          size,
-          fullWidth,
-          roundedFull,
-          iconOnly,
-        }),
-        className
-      )}
-      disabled={isDisabled}
-      {...props}
-    >
-      {leftIcon && <span>{leftIcon}</span>}
+    <button className={buttonClasses} disabled={isDisabled} {...props}>
+      {renderIcon(leftIcon)}
       {!iconOnly && children}
-      {rightIcon && <span>{rightIcon}</span>}
+      {renderIcon(rightIcon)}
       {loading && <Loader />}
     </button>
   );

@@ -6,7 +6,6 @@ import { cva } from "class-variance-authority";
 import { twMerge } from "tailwind-merge";
 import type { InputProps } from "./types";
 
-// Tailwind input container variants (size, type, error state)
 const inputVariants = cva(
   "relative inline-flex items-center rounded-md overflow-hidden transition duration-300 ease-in-out",
   {
@@ -15,8 +14,6 @@ const inputVariants = cva(
         default: "bg-gray-100 ring-1 ring-gray-300",
         outlined: "bg-transparent ring-2 ring-primary",
         placeholder: "bg-transparent ring-1 ring-gray-300",
-        disabled:
-          "pointer-events-none opacity-50 bg-gray-100 ring-1 ring-gray-300",
         filled: "bg-gray-200 ring-0",
         underline:
           "bg-transparent border-b-2 border-primary rounded-none focus:ring-0",
@@ -33,16 +30,8 @@ const inputVariants = cva(
       },
     },
     compoundVariants: [
-      {
-        variant: "underline",
-        hasError: false,
-        class: "focus-within:ring-0",
-      },
-      {
-        variant: "underline",
-        hasError: true,
-        class: "focus-within:ring-0",
-      },
+      { variant: "underline", hasError: true, class: "focus-within:ring-0" },
+      { variant: "underline", hasError: false, class: "focus-within:ring-0" },
     ],
     defaultVariants: {
       variant: "default",
@@ -52,18 +41,15 @@ const inputVariants = cva(
   }
 );
 
-// Text size map based on input size
 const sizeTextMap = {
   sm: "text-xs",
   md: "text-sm",
   lg: "text-base",
 } as const;
 
-// Shared icon container styles
 const iconWrapperClass =
   "w-8 sm:w-9 h-full inline-flex items-center justify-center";
 
-// Input component
 function Input({
   type = "text",
   label,
@@ -81,27 +67,48 @@ function Input({
   const inputId = `input-${id}`;
   const errorId = `error-${id}`;
 
-  const hasError = !!errorMessage;
+  const hasError = Boolean(errorMessage);
   const isPassword = type === "password";
   const [passwordVisible, setPasswordVisible] = useState(false);
-  const showPassword = isPassword && passwordVisible;
-  const inputType = isPassword ? (showPassword ? "text" : "password") : type;
-
+  const inputType = isPassword ? (passwordVisible ? "text" : "password") : type;
   const sizeTextClass = sizeTextMap[inputSize];
 
-  // Toggle password visibility
-  const handleTogglePassword = useCallback(() => {
-    setPasswordVisible((prev) => !prev);
-  }, []);
+  const handleTogglePassword = useCallback(
+    () => setPasswordVisible((prev) => !prev),
+    []
+  );
+
+  const renderIcon = (icon: React.ReactNode) =>
+    icon && <span className={iconWrapperClass}>{icon}</span>;
+
+  const wrapperClasses = twMerge(
+    inputVariants({
+      variant,
+      inputSize,
+      hasError,
+    }),
+    fullWidth && "w-full",
+    disabled && "pointer-events-none opacity-50",
+    className
+  );
+
+  const inputClasses = twMerge(
+    "border-none outline-none bg-transparent flex-1 py-1",
+    sizeTextClass,
+    variant === "placeholder" && "placeholder:text-primary",
+    !leftIcon && "pl-3",
+    !rightIcon && !isPassword && "pr-3",
+    variant === "underline" && "rounded-none"
+  );
 
   return (
     <div
       className={twMerge(
         "flex flex-col gap-1",
-        fullWidth ? "w-full" : "sm:w-auto"
+        fullWidth ? "w-full" : "sm:w-auto",
+        disabled && "pointer-events-none opacity-50"
       )}
     >
-      {/* Label */}
       {label && (
         <label
           htmlFor={inputId}
@@ -111,56 +118,32 @@ function Input({
         </label>
       )}
 
-      {/* Input field wrapper */}
-      <div
-        className={twMerge(
-          inputVariants({
-            variant: disabled ? "disabled" : variant,
-            inputSize,
-            hasError,
-          }),
-          fullWidth && "w-full",
-          disabled && "pointer-events-none opacity-50",
-          className
-        )}
-      >
-        {/* Left icon */}
-        {leftIcon && <span className={iconWrapperClass}>{leftIcon}</span>}
+      <div className={wrapperClasses}>
+        {renderIcon(leftIcon)}
 
-        {/* Input element */}
         <input
           id={inputId}
           type={inputType}
           disabled={disabled}
           aria-describedby={hasError ? errorId : undefined}
-          className={twMerge(
-            "border-none outline-none bg-transparent flex-1 py-1",
-            sizeTextClass,
-            variant === "placeholder" && "placeholder:text-primary",
-            !leftIcon && "pl-3",
-            !rightIcon && !isPassword && "pr-3",
-            variant === "underline" && "rounded-none"
-          )}
+          className={inputClasses}
           {...props}
         />
 
-        {/* Right icon */}
-        {rightIcon && <span className={iconWrapperClass}>{rightIcon}</span>}
+        {renderIcon(rightIcon)}
 
-        {/* Password toggle button */}
         {isPassword && (
           <button
             type="button"
             onClick={handleTogglePassword}
             className={twMerge(iconWrapperClass, "cursor-pointer")}
-            aria-label={showPassword ? "Hide password" : "Show password"}
+            aria-label={passwordVisible ? "Hide password" : "Show password"}
           >
-            {showPassword ? <LuEyeOff size={20} /> : <LuEye size={20} />}
+            {passwordVisible ? <LuEyeOff size={20} /> : <LuEye size={20} />}
           </button>
         )}
       </div>
 
-      {/* Error message */}
       <div className="min-h-[1rem] sm:min-h-[1.25rem]">
         {hasError && (
           <p
