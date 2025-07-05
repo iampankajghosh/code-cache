@@ -7,23 +7,23 @@ class HTTPService {
     this.apiClient = client.getAxiosInstance();
   }
 
-  public get(url: string, config = {}) {
+  public _get(url: string, config = {}) {
     return this.apiClient.get(url, config);
   }
 
-  public post(url: string, data = {}, config = {}) {
+  public _post(url: string, data = {}, config = {}) {
     return this.apiClient.post(url, data, config);
   }
 
-  public put(url: string, data = {}, config = {}) {
+  public _put(url: string, data = {}, config = {}) {
     return this.apiClient.put(url, data, config);
   }
 
-  public delete(url: string, config = {}) {
+  public _delete(url: string, config = {}) {
     return this.apiClient.delete(url, config);
   }
 
-  public patch(url: string, data = {}, config = {}) {
+  public _patch(url: string, data = {}, config = {}) {
     return this.apiClient.patch(url, data, config);
   }
 }

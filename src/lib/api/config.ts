@@ -7,7 +7,6 @@ const defaultConfig = {
   headers: {
     "Content-Type": "application/json",
   },
-  withCredentials: true,
   tokenKey: "access_token",
   redirectOnUnauthorized: true,
   loginRedirectPath: "/login",

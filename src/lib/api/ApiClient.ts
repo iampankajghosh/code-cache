@@ -13,7 +13,6 @@ class ApiClient {
       baseURL: this.config.baseURL,
       timeout: this.config.timeout,
       headers: this.config.headers,
-      withCredentials: this.config.withCredentials,
     });
 
     this.initializeRequestInterceptor();
@@ -25,7 +24,9 @@ class ApiClient {
       (config) => {
         const token = storageService.getItem(this.config.tokenKey);
 
-        if (token) {
+        const isExternalRequest = !!config.url?.startsWith(this.config.baseURL);
+
+        if (token && !isExternalRequest) {
           config.headers.Authorization = `Bearer ${token}`;
         }
 
