@@ -64,6 +64,7 @@ function Button({
   fullWidth,
   roundedFull,
   iconOnly,
+  loaderOnly,
   ...props
 }: Readonly<ButtonProps>) {
   const isDisabled = disabled || loading;
@@ -78,10 +79,16 @@ function Button({
 
   return (
     <button className={buttonClasses} disabled={isDisabled} {...props}>
-      {renderIcon(leftIcon)}
-      {!iconOnly && children}
-      {renderIcon(rightIcon)}
-      {loading && <Loader />}
+      {loading && loaderOnly ? (
+        <Loader />
+      ) : (
+        <>
+          {renderIcon(leftIcon)}
+          {!iconOnly && children}
+          {renderIcon(rightIcon)}
+          {loading && <Loader />}
+        </>
+      )}
     </button>
   );
 }

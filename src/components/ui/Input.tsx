@@ -112,7 +112,7 @@ function Input({
       {label && (
         <label
           htmlFor={inputId}
-          className={twMerge("font-medium text-gray-700", sizeTextClass)}
+          className={twMerge("font-medium", sizeTextClass)}
         >
           {label}
         </label>
@@ -144,17 +144,15 @@ function Input({
         )}
       </div>
 
-      <div className="min-h-[1rem] sm:min-h-[1.25rem]">
-        {hasError && (
-          <p
-            id={errorId}
-            className={twMerge("mt-0.5 text-red-500", sizeTextClass)}
-            role="alert"
-          >
-            {errorMessage}
-          </p>
-        )}
-      </div>
+      {hasError && (
+        <p
+          id={errorId}
+          className={twMerge("mt-0.5 text-red-500", sizeTextClass)}
+          role="alert"
+        >
+          {errorMessage}
+        </p>
+      )}
     </div>
   );
 }
