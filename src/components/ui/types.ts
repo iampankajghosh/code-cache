@@ -1,9 +1,6 @@
-export interface InputProps
-  extends React.InputHTMLAttributes<HTMLInputElement> {
-  type?: React.InputHTMLAttributes<HTMLInputElement>["type"];
+export type InputProps = {
   label?: string;
-  leftIcon?: React.ReactNode;
-  rightIcon?: React.ReactNode;
+  type?: React.InputHTMLAttributes<HTMLInputElement>["type"];
   variant?:
     | "default"
     | "outlined"
@@ -14,11 +11,12 @@ export interface InputProps
   inputSize?: "sm" | "md" | "lg";
   fullWidth?: boolean;
   disabled?: boolean;
+  leftIcon?: React.ReactNode;
+  rightIcon?: React.ReactNode;
   errorMessage?: string;
-}
+} & React.InputHTMLAttributes<HTMLInputElement>;
 
-export interface ButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+export type ButtonProps = {
   variant?:
     | "default"
     | "outlined"
@@ -27,10 +25,29 @@ export interface ButtonProps
     | "success"
     | "secondary";
   size?: "sm" | "md" | "lg";
+  fullWidth?: boolean;
+  disabled?: boolean;
   leftIcon?: React.ReactNode;
   rightIcon?: React.ReactNode;
-  loading?: boolean;
-  fullWidth?: boolean;
-  roundedFull?: boolean;
   iconOnly?: boolean;
-}
+  loaderOnly?: boolean;
+  loading?: boolean;
+  roundedFull?: boolean;
+} & React.ButtonHTMLAttributes<HTMLButtonElement>;
+
+export type FileInputProps = {
+  label?: string;
+  placeholder?: string;
+  variant?:
+    | "default"
+    | "outlined"
+    | "underline"
+    | "minimal"
+    | "placeholder"
+    | "filled";
+  inputSize?: "sm" | "md" | "lg";
+  fullWidth?: boolean;
+  disabled?: boolean;
+  errorMessage?: string;
+  className?: string;
+} & React.InputHTMLAttributes<HTMLInputElement>;
