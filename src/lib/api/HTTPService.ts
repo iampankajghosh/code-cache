@@ -28,4 +28,4 @@ class HTTPService {
   }
 }
 
-export default HTTPService;
+export const httpService = new HTTPService();

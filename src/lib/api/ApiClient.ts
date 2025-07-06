@@ -38,7 +38,7 @@ class ApiClient {
 
   private initializeResponseInterceptor() {
     this.axiosInstance.interceptors.response.use(
-      (response) => response.data,
+      (response) => response,
       (error) => {
         if (error.response) {
           const { status } = error.response;
