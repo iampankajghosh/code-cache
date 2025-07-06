@@ -2,7 +2,7 @@ import config from "@/src/config";
 
 // default config for axios
 const defaultConfig = {
-  baseURL: config.BASE_URL,
+  baseURL: `${config.BASE_URL}/api/v1`,
   timeout: 10000,
   headers: {
     "Content-Type": "application/json",

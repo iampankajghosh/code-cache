@@ -21,7 +21,6 @@ export default function Home() {
     defaultValues: {
       preferred_location: "",
       expected_salary: "",
-      resume_file: null,
     },
     mode: "onChange",
   });
@@ -34,10 +33,12 @@ export default function Home() {
 
   const locationValue = watch("preferred_location");
 
-  const onSubmit = (data: AnalyzeFormData) => {
+  const onSubmit = async (data: AnalyzeFormData) => {
     setAnalyzing(true);
     try {
       console.log(data);
+      const res = await publicService.analyze(data);
+      console.log(res);
       setSearchResults([]);
     } catch (error) {
       console.error(error);
@@ -131,7 +132,7 @@ export default function Home() {
                         shouldValidate: true,
                       });
                     }}
-                    className="cursor-pointer hover:bg-gray-200 py-1 px-3 text-start transition-colors duration-300 ease-in-out"
+                    className="w-full hover:bg-gray-200 py-1 px-3 text-start cursor-pointer transition-colors duration-300 ease-in-out"
                   >
                     {option}
                   </button>
