@@ -83,7 +83,7 @@ export default function Dashboard() {
     };
   };
 
-  // Load saved layout from localStorage
+  // Load saved layout from localStorage and handle resize
   useEffect(() => {
     const savedGridItems = localStorage.getItem("dashboardGridItems");
     const savedAvailableCards = localStorage.getItem("dashboardAvailableCards");
@@ -99,13 +99,14 @@ export default function Dashboard() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // Save layout to localStorage
+  // Save layout to localStorage and close card list
   const saveLayout = () => {
     localStorage.setItem("dashboardGridItems", JSON.stringify(gridItems));
     localStorage.setItem(
       "dashboardAvailableCards",
       JSON.stringify(availableCards)
     );
+    setIsCardListOpen(false); // Close card list after saving
     alert("Layout saved successfully!");
   };
 
@@ -193,7 +194,7 @@ export default function Dashboard() {
     return (
       <div
         className="bg-white p-4 rounded-lg shadow-md h-full flex flex-col"
-        draggable
+        draggable={isCardListOpen} // Only draggable when card list is open
         onDragStart={(e) => handleDragStartFromGrid(card, e)}
       >
         <h3 className="font-bold text-lg mb-2">{card.title}</h3>
@@ -216,7 +217,7 @@ export default function Dashboard() {
     <div className="flex h-screen bg-gray-100">
       {/* Navigation Sidebar */}
       <div className="w-64 bg-gray-800 text-white flex flex-col">
-        <div className="p四大">
+        <div className="p-4">
           <h2 className="text-xl font-bold">Navigation</h2>
         </div>
         <nav className="flex-1">
@@ -249,7 +250,7 @@ export default function Dashboard() {
         </nav>
         <button
           onClick={toggleCardList}
-          className="m-4 p-2 bg-blue themed-500 rounded hover:bg-blue-600"
+          className="m-4 p-2 bg-blue-500 rounded hover:bg-blue-600"
         >
           {isCardListOpen ? "Close Editor" : "Edit Dashboard"}
         </button>
@@ -284,8 +285,8 @@ export default function Dashboard() {
             isDroppable
             onLayoutChange={onLayoutChange}
             onResizeStop={onResizeStop}
-            isResizable
-            isDraggable
+            isResizable={isCardListOpen} // Resizable only when card list is open
+            isDraggable={isCardListOpen} // Draggable only when card list is open
           >
             {gridItems.map((item) => (
               <div
