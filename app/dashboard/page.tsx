@@ -63,10 +63,12 @@ const initialCards: Card[] = [
 
 export default function Dashboard() {
   const [gridItems, setGridItems] = useState<Card[]>([]);
+  const [availableCards, setAvailableCards] = useState<Card[]>(initialCards);
   const [layouts, setLayouts] = useState({});
   const [maxDimensions, setMaxDimensions] = useState({ maxW: 12, maxH: 8 });
   const [isCardListOpen, setIsCardListOpen] = useState(false);
   const gridRef = useRef<HTMLDivElement>(null);
+  const cardListRef = useRef<HTMLDivElement>(null);
 
   // Calculate maximum size based on screen dimensions
   const calculateMaxDimensions = () => {
@@ -93,17 +95,30 @@ export default function Dashboard() {
   }, []);
 
   // Handle drag start from card list
-  const handleDragStart = (card: Card, e: React.DragEvent) => {
-    e.dataTransfer.setData("text/plain", JSON.stringify(card));
+  const handleDragStartFromList = (card: Card, e: React.DragEvent) => {
+    e.dataTransfer.setData(
+      "text/plain",
+      JSON.stringify({ ...card, source: "list" })
+    );
+  };
+
+  // Handle drag start from grid
+  const handleDragStartFromGrid = (card: Card, e: React.DragEvent) => {
+    e.dataTransfer.setData(
+      "text/plain",
+      JSON.stringify({ ...card, source: "grid" })
+    );
   };
 
   // Handle drop on grid
-  const handleDrop = (e: React.DragEvent) => {
+  const handleDropOnGrid = (e: React.DragEvent) => {
     e.preventDefault();
-    const cardData = JSON.parse(e.dataTransfer.getData("text/plain"));
+    const data = JSON.parse(e.dataTransfer.getData("text/plain"));
+    if (data.source !== "list") return; // Only handle drops from card list
+
     const newCard = {
-      ...cardData,
-      id: uuidv4(),
+      ...data,
+      id: uuidv4(), // Generate new ID to avoid conflicts
       x: 0,
       y: 0,
     };
@@ -112,7 +127,20 @@ export default function Dashboard() {
     newCard.maxW = Math.min(newCard.maxW, maxDimensions.maxW);
     newCard.maxH = Math.min(newCard.maxH, maxDimensions.maxH);
 
+    // Add to grid and remove from available cards
     setGridItems([...gridItems, newCard]);
+    setAvailableCards(availableCards.filter((card) => card.id !== data.id));
+  };
+
+  // Handle drop on card list
+  const handleDropOnCardList = (e: React.DragEvent) => {
+    e.preventDefault();
+    const data = JSON.parse(e.dataTransfer.getData("text/plain"));
+    if (data.source !== "grid") return; // Only handle drops from grid
+
+    // Add back to available cards and remove from grid
+    setAvailableCards([...availableCards, { ...data, id: data.id }]);
+    setGridItems(gridItems.filter((item) => item.id !== data.id));
   };
 
   // Handle layout change
@@ -135,7 +163,7 @@ export default function Dashboard() {
     setGridItems(updatedItems);
   };
 
-  // Allow drop on grid
+  // Allow drop on grid and card list
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
   };
@@ -148,7 +176,11 @@ export default function Dashboard() {
   // Render different card types
   const renderCard = (card: Card) => {
     return (
-      <div className="bg-white p-4 rounded-lg shadow-md h-full flex flex-col">
+      <div
+        className="bg-white p-4 rounded-lg shadow-md h-full flex flex-col"
+        draggable
+        onDragStart={(e) => handleDragStartFromGrid(card, e)}
+      >
         <h3 className="font-bold text-lg mb-2">{card.title}</h3>
         <p>{card.content}</p>
         {card.type === "chart" && (
@@ -224,7 +256,7 @@ export default function Dashboard() {
         {/* Grid Area */}
         <div
           className="flex-1 p-4 overflow-auto"
-          onDrop={handleDrop}
+          onDrop={handleDropOnGrid}
           onDragOver={handleDragOver}
           ref={gridRef}
         >
@@ -268,6 +300,9 @@ export default function Dashboard() {
         className={`fixed top-0 right-0 h-full w-80 bg-white p-4 shadow-lg transform transition-transform duration-300 ease-in-out ${
           isCardListOpen ? "translate-x-0" : "translate-x-full"
         }`}
+        onDrop={handleDropOnCardList}
+        onDragOver={handleDragOver}
+        ref={cardListRef}
       >
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-bold">Available Cards</h2>
@@ -279,11 +314,14 @@ export default function Dashboard() {
           </button>
         </div>
         <div className="overflow-y-auto h-[calc(100%-4rem)]">
-          {initialCards.map((card) => (
+          {availableCards.length === 0 && (
+            <p className="text-gray-600">No cards available</p>
+          )}
+          {availableCards.map((card) => (
             <div
               key={card.id}
               draggable
-              onDragStart={(e) => handleDragStart(card, e)}
+              onDragStart={(e) => handleDragStartFromList(card, e)}
               className="mb-4 p-4 bg-gray-50 rounded-lg cursor-move hover:bg-gray-100"
             >
               <h3 className="font-semibold">{card.title}</h3>
