@@ -83,16 +83,31 @@ export default function Dashboard() {
     };
   };
 
-  // Update max dimensions on window resize
+  // Load saved layout from localStorage
   useEffect(() => {
+    const savedGridItems = localStorage.getItem("dashboardGridItems");
+    const savedAvailableCards = localStorage.getItem("dashboardAvailableCards");
+    if (savedGridItems && savedAvailableCards) {
+      setGridItems(JSON.parse(savedGridItems));
+      setAvailableCards(JSON.parse(savedAvailableCards));
+    }
     const handleResize = () => {
       setMaxDimensions(calculateMaxDimensions());
     };
-
     handleResize(); // Initial calculation
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
+  // Save layout to localStorage
+  const saveLayout = () => {
+    localStorage.setItem("dashboardGridItems", JSON.stringify(gridItems));
+    localStorage.setItem(
+      "dashboardAvailableCards",
+      JSON.stringify(availableCards)
+    );
+    alert("Layout saved successfully!");
+  };
 
   // Handle drag start from card list
   const handleDragStartFromList = (card: Card, e: React.DragEvent) => {
@@ -201,7 +216,7 @@ export default function Dashboard() {
     <div className="flex h-screen bg-gray-100">
       {/* Navigation Sidebar */}
       <div className="w-64 bg-gray-800 text-white flex flex-col">
-        <div className="p-4">
+        <div className="p四大">
           <h2 className="text-xl font-bold">Navigation</h2>
         </div>
         <nav className="flex-1">
@@ -234,7 +249,7 @@ export default function Dashboard() {
         </nav>
         <button
           onClick={toggleCardList}
-          className="m-4 p-2 bg-blue-500 rounded hover:bg-blue-600"
+          className="m-4 p-2 bg-blue themed-500 rounded hover:bg-blue-600"
         >
           {isCardListOpen ? "Close Editor" : "Edit Dashboard"}
         </button>
@@ -260,7 +275,6 @@ export default function Dashboard() {
           onDragOver={handleDragOver}
           ref={gridRef}
         >
-          <h1 className="text-2xl font-bold mb-4">Dashboard</h1>
           <ResponsiveGridLayout
             className="layout"
             layouts={layouts}
@@ -306,12 +320,20 @@ export default function Dashboard() {
       >
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-bold">Available Cards</h2>
-          <button
-            onClick={toggleCardList}
-            className="p-2 bg-red-500 text-white rounded hover:bg-red-600"
-          >
-            Close
-          </button>
+          <div className="flex space-x-2">
+            <button
+              onClick={saveLayout}
+              className="p-2 bg-green-500 text-white rounded hover:bg-green-600"
+            >
+              Save
+            </button>
+            <button
+              onClick={toggleCardList}
+              className="p-2 bg-red-500 text-white rounded hover:bg-red-600"
+            >
+              Close
+            </button>
+          </div>
         </div>
         <div className="overflow-y-auto h-[calc(100%-4rem)]">
           {availableCards.length === 0 && (
