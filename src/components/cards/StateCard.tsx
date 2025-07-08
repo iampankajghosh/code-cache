@@ -4,7 +4,7 @@ import React from "react";
 
 function StateCard() {
   return (
-    <div className="w-full bg-blue-50 px-6 py-5 rounded-[14px] border border-blue-100">
+    <div className="w-full h-full bg-blue-50 px-6 py-5 rounded-[14px] border border-blue-100">
       <p className="font-medium text-base mb-5">Today&apos;s Attendance</p>
 
       <div className="flex items-end justify-between">

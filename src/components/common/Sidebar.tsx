@@ -99,7 +99,19 @@ const SECONDARY_NAV_LINKS = [
   },
 ];
 
-function Sidebar() {
+interface SidebarProps {
+  isCardListOpen: boolean;
+  onToggleCardList: () => void;
+  isEditing: boolean;
+  onSaveLayout: () => void;
+}
+
+function Sidebar({
+  isCardListOpen,
+  onToggleCardList,
+  isEditing,
+  onSaveLayout,
+}: SidebarProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
 
@@ -108,15 +120,27 @@ function Sidebar() {
       {links.map((link) => (
         <li key={link.name}>
           {!link?.children?.length ? (
-            <Link
-              href={link.href}
-              className="group capitalize bg-white hover:bg-gray-100 text-gray-700 hover:text-gray-900 rounded-md flex items-center gap-[10px] px-[18px] py-3 transition-colors duration-200 ease-in-out"
-            >
-              <span className="group-hover:text-blue-600 transition-colors duration-200 ease-in-out">
-                {link.icon}
-              </span>
-              <span>{link.name}</span>
-            </Link>
+            link.name === "new & edit layout" ? (
+              <button
+                onClick={isEditing ? onSaveLayout : onToggleCardList}
+                className="group w-full capitalize bg-white hover:bg-gray-100 text-gray-700 hover:text-gray-900 rounded-md flex items-center gap-[10px] px-[18px] py-3 transition-colors duration-200 ease-in-out"
+              >
+                <span className="group-hover:text-blue-600 transition-colors duration-200 ease-in-out">
+                  {link.icon}
+                </span>
+                <span>{isEditing ? "save layout" : link.name}</span>
+              </button>
+            ) : (
+              <Link
+                href={link.href}
+                className="group capitalize bg-white hover:bg-gray-100 text-gray-700 hover:text-gray-900 rounded-md flex items-center gap-[10px] px-[18px] py-3 transition-colors duration-200 ease-in-out"
+              >
+                <span className="group-hover:text-blue-600 transition-colors duration-200 ease-in-out">
+                  {link.icon}
+                </span>
+                <span>{link.name}</span>
+              </Link>
+            )
           ) : (
             <>
               <button className="group w-full capitalize bg-white hover:bg-gray-100 text-gray-700 hover:text-gray-900 rounded-md flex items-center justify-between gap-[10px] px-[18px] py-3 transition-colors duration-200 ease-in-out">
