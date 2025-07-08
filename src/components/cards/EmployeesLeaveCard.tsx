@@ -5,7 +5,7 @@ import { LuChevronDown } from "react-icons/lu";
 
 function EmployeesLeaveCard() {
   return (
-    <div className="w-full bg-white px-6 py-5 rounded-[14px] border border-gray-200">
+    <div className="w-full h-full bg-white px-6 py-5 rounded-[14px] border border-gray-200">
       <div className="flex items-center justify-between gap-2 mb-5">
         <p className="font-medium text-base">Events</p>
 

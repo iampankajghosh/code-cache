@@ -25,13 +25,29 @@ function DashboardLayout({
   const [isCardListOpen, setIsCardListOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [cards, setCards] = useState<DashboardCard[]>([]);
+  // Track available card types
+  const [availableCardTypes, setAvailableCardTypes] = useState<string[]>([
+    "StateCard",
+    "EventCard",
+    "ReminderCard",
+    "NotificationCard",
+    "EmployeesLeaveCard",
+  ]);
 
   // Load saved layout from localStorage on mount
   useEffect(() => {
     const savedLayout = localStorage.getItem("dashboardLayout");
     if (savedLayout) {
       console.log("Loaded layout from localStorage:", JSON.parse(savedLayout));
-      setCards(JSON.parse(savedLayout));
+      const loadedCards = JSON.parse(savedLayout);
+      setCards(loadedCards);
+      // Update available card types based on loaded cards
+      setAvailableCardTypes((prev) =>
+        prev.filter(
+          (type) =>
+            !loadedCards.some((card: DashboardCard) => card.component === type)
+        )
+      );
     }
   }, []);
 
@@ -54,21 +70,23 @@ function DashboardLayout({
     e.preventDefault();
     const cardType = e.dataTransfer.getData("text/plain");
     console.log("Dropped card type:", cardType);
-    if (!cardType) return;
+    if (!cardType || !availableCardTypes.includes(cardType)) return;
 
     const newCard: DashboardCard = {
       id: `${cardType}-${Date.now()}`,
       component: cardType,
       layout: {
         i: `${cardType}-${Date.now()}`,
-        x: Math.floor(e.clientX / 100) % 12, // Approximate grid position
-        y: Math.floor(e.clientY / 30), // Approximate grid position
-        w: 4,
-        h: 4,
+        x: Math.floor(e.clientX / 100) % 12,
+        y: Math.floor(e.clientY / 30),
+        w: 4, // Default "actual" size
+        h: 4, // Default "actual" size
       },
     };
     console.log("Adding new card:", newCard);
     setCards((prev) => [...prev, newCard]);
+    // Remove card type from available list
+    setAvailableCardTypes((prev) => prev.filter((type) => type !== cardType));
   };
 
   // Handle layout changes
@@ -80,6 +98,23 @@ function DashboardLayout({
         layout: newLayout.find((l) => l.i === card.id) || card.layout,
       }))
     );
+  };
+
+  // Handle dragging a card from dashboard
+  const handleCardDragStart = (
+    e: React.DragEvent<HTMLDivElement>,
+    card: DashboardCard
+  ) => {
+    e.dataTransfer.setData("text/plain", card.component);
+    e.dataTransfer.setData("cardId", card.id);
+    console.log("Dragging card from dashboard:", card);
+  };
+
+  // Handle removing a card when dropped back to CardVarietyList
+  const handleRemoveCard = (cardId: string, cardType: string) => {
+    console.log("Removing card:", cardId, cardType);
+    setCards((prev) => prev.filter((card) => card.id !== cardId));
+    setAvailableCardTypes((prev) => [...prev, cardType].sort());
   };
 
   // Render card component based on type
@@ -133,8 +168,9 @@ function DashboardLayout({
               {cards.map((card) => (
                 <div
                   key={card.id}
-                  className="bg-white border border-gray-200 rounded-md shadow-sm p-4"
                   style={{ overflow: "hidden" }}
+                  draggable={isEditing}
+                  onDragStart={(e) => handleCardDragStart(e, card)}
                 >
                   {renderCard(card)}
                 </div>
@@ -144,7 +180,12 @@ function DashboardLayout({
         </main>
       </div>
 
-      <CardVarietyList isOpen={isCardListOpen} setIsOpen={setIsCardListOpen} />
+      <CardVarietyList
+        isOpen={isCardListOpen}
+        setIsOpen={setIsCardListOpen}
+        availableCardTypes={availableCardTypes}
+        onRemoveCard={handleRemoveCard}
+      />
     </div>
   );
 }
