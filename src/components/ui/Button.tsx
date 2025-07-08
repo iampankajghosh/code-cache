@@ -9,13 +9,13 @@ import type { ButtonProps } from "./types";
 
 // Tailwind variant styles for the button
 const buttonVariants = cva(
-  "relative inline-flex items-center justify-center gap-2 font-medium overflow-hidden cursor-pointer shadow-[inset_0_2px_5px_rgba(255,255,255,0.8)] hover:shadow-[inset_0_2px_5px_rgba(255,255,255,0.6)] transition duration-300 ease-in-out min-h-[44px] min-w-[44px]",
+  "relative inline-flex items-center justify-center gap-2 font-medium overflow-hidden cursor-pointer min-h-[44px] min-w-[44px] transition duration-300 ease-in-out",
   {
     variants: {
       variant: {
         default: "bg-primary text-white",
         outlined: "bg-transparent text-primary border border-primary",
-        ghost: "bg-transparent text-primary hover:bg-primary/10",
+        ghost: "bg-transparent text-primary hover:bg-primary/5",
         destructive: "bg-red-600 text-white hover:bg-red-700",
         success: "bg-green-600 text-white hover:bg-green-700",
         secondary: "bg-gray-200 text-gray-800 hover:bg-gray-300",
