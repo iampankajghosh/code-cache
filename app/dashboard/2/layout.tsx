@@ -6,7 +6,7 @@ import GridLayout, { Layout } from "react-grid-layout";
 import "react-grid-layout/css/styles.css";
 import "react-resizable/css/styles.css";
 import {
-  StateCard,
+  TodaysAttendanceCard,
   EventCard,
   ReminderCard,
   NotificationCard,
@@ -19,15 +19,13 @@ interface DashboardCard {
   layout: Layout;
 }
 
-function DashboardLayout({
-  children,
-}: Readonly<{ children: React.ReactNode }>) {
+function DashboardLayout() {
   const [isCardListOpen, setIsCardListOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [cards, setCards] = useState<DashboardCard[]>([]);
   // Track available card types
   const [availableCardTypes, setAvailableCardTypes] = useState<string[]>([
-    "StateCard",
+    "TodaysAttendanceCard",
     "EventCard",
     "ReminderCard",
     "NotificationCard",
@@ -121,8 +119,8 @@ function DashboardLayout({
   const renderCard = (card: DashboardCard) => {
     console.log("Rendering card:", card);
     switch (card.component) {
-      case "StateCard":
-        return <StateCard />;
+      case "TodaysAttendanceCard":
+        return <TodaysAttendanceCard />;
       case "EventCard":
         return <EventCard />;
       case "ReminderCard":
@@ -153,7 +151,7 @@ function DashboardLayout({
           onDragOver={(e) => e.preventDefault()}
           onDrop={isEditing ? handleDrop : undefined}
         >
-          <div className="relative w-full h-full">
+          <div className="relative w-full h-full bg-white">
             <GridLayout
               className="layout"
               layout={cards.map((card) => card.layout)}

@@ -10,7 +10,7 @@ import {
   EventCard,
   NotificationCard,
   ReminderCard,
-  StateCard,
+  TodaysAttendanceCard,
 } from "../cards";
 
 interface CardVarietyListProps {
@@ -25,7 +25,7 @@ function CardVarietyList({
   setIsOpen,
   availableCardTypes,
   onRemoveCard,
-}: CardVarietyListProps) {
+}: Readonly<CardVarietyListProps>) {
   const toggleSidebar = () => setIsOpen(!isOpen);
 
   // Handle drag start for cards
@@ -51,8 +51,8 @@ function CardVarietyList({
   // Render card component based on type
   const renderCard = (cardType: string) => {
     switch (cardType) {
-      case "StateCard":
-        return <StateCard />;
+      case "TodaysAttendanceCard":
+        return <TodaysAttendanceCard />;
       case "EventCard":
         return <EventCard />;
       case "ReminderCard":
