@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Header, Sidebar } from "@/src/components/common";
+import { CardVarietyList, Header, Sidebar } from "@/src/components/common";
 
 function DashboardLayout({
   children,
@@ -17,6 +17,8 @@ function DashboardLayout({
           {children}
         </main>
       </div>
+
+      <CardVarietyList />
     </div>
   );
 }

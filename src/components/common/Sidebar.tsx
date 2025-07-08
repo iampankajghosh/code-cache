@@ -157,7 +157,7 @@ function Sidebar() {
   return (
     <aside
       className={twMerge(
-        "bg-white flex flex-col transition-all duration-300 ease-in-out",
+        "bg-white flex flex-col h-full transition-all duration-300 ease-in-out",
         !sidebarOpen ? "w-[300px]" : "w-0"
       )}
     >
@@ -168,7 +168,10 @@ function Sidebar() {
           height={26}
           alt="Dashboard Logo"
         />
-        <button className="text-gray-600" onClick={toggleSidebar}>
+        <button
+          className="text-gray-600 cursor-pointer"
+          onClick={toggleSidebar}
+        >
           <LuPanelLeft size={20} />
         </button>
       </div>
