@@ -14,7 +14,7 @@ function DashboardLayout({
         <Header />
 
         <main className="flex-1 h-[calc(100vh-74px)] overflow-hidden overflow-y-auto">
-          {children}
+          <div>{/* canvas */}</div>
         </main>
       </div>
 
